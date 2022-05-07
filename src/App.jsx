@@ -12,13 +12,20 @@ function App() {
     fetchPopular();
   }, []);
   const fetchPopular = async () => {
-    const data = await fetch(
+    await fetch(
       "https://api.themoviedb.org/3/movie/popular?api_key=743127c442b8188e9b52b760b15d7a3e"
-    );
-    const movies = await data.json();
-    console.log(movies);
-    setPopular(movies.results);
-    setFiltered(movies.results);
+    )
+      .then((data) => {
+        return data.json();
+      })
+      .then((dataStream) => {
+        console.log("data: ", dataStream);
+        setPopular(dataStream.results);
+        setFiltered(dataStream.results);
+      })
+      .catch((err) => {
+        alert("诶? 估计被墙了 xD", err);
+      });
   };
   return (
     <div className="App">
