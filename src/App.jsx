@@ -1,8 +1,13 @@
 import { useState, useEffect } from "react";
 import Movie from "./movie";
+import Filter from "./utils/filter";
+import { motion, AnimatePresence } from "framer-motion";
+
 import "./App.css";
 function App() {
   const [popular, setPopular] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+  const [activeGenre, setActiveGenre] = useState(0);
   useEffect(() => {
     fetchPopular();
   }, []);
@@ -13,16 +18,27 @@ function App() {
     const movies = await data.json();
     console.log(movies);
     setPopular(movies.results);
+    setFiltered(movies.results);
   };
   return (
     <div className="App">
-      {popular.map((movie) => {
-        return (
-          <div className="" key={movie.id}>
-            <Movie movie={movie} />
-          </div>
-        );
-      })}
+      <Filter
+        popular={popular}
+        setFiltered={setFiltered}
+        activeGenre={activeGenre}
+        setActiveGenre={setActiveGenre}
+      />
+      <motion.div layout className="popular-movies">
+        <AnimatePresence>
+          {filtered.map((movie) => {
+            return (
+              <div className="" key={movie.id}>
+                <Movie movie={movie} />
+              </div>
+            );
+          })}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 }
